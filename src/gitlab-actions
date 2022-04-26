@@ -1,0 +1,16 @@
+#!/usr/bin/env php
+<?php
+
+namespace Sparkfabrik\GitlabCiClient;
+
+require __DIR__ . '/../vendor/autoload.php';
+//require_once __DIR__ . '/GitlabActionsCommand.php';
+
+use Symfony\Component\Console\Application;
+
+
+$app = new Application('Gitlab actions', '0.0.1');
+$app->add(new GitlabActionsCommand());
+$app->setdefaultCommand('gitlab:actions', TRUE);
+$app->run();
+
