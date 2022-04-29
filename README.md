@@ -79,3 +79,21 @@ example-gitlab-ci-job:
         sparkfabrik/gitlab-ci-client mergeRequests.create \
         '[$CI_PROJECT_ID,"autobranch/$CI_PIPELINE_ID","develop","AUTO: New merge request from pipeline $CI_PIPELINE_ID"]'
 ```
+The above example will create a new merge request on the current project from branch "autobranch/$CI_PIPELINE_ID"
+(which is supposed to be created by this job before this execution) to branch "develop" and will title it "AUTO: New merge request from pipeline $CI_PIPELINE_ID".
+
+Another example for fetching all opened merge requests:
+```yaml
+example-gitlab-ci-job:
+  stage: build
+  script:
+    - |
+      docker run \
+        -e GITLAB_PRIVATE_TOKEN \
+        -e CI_SERVER_URL \
+        sparkfabrik/gitlab-ci-client mergeRequests.all '[$CI_PROJECT_ID,{"state":"opened","iids":[123,456]}]'
+```
+The above example will return only opened merge requests for the current project among a subset of given merge request ids (iids).
+
+
+Of course these are just simple examples. There are plenty of actions you can automate with this tool. The sky is the limit.
