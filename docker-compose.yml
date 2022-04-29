@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  gitlab-actions:
+    build:
+      dockerfile: ./Dockerfile
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+      context: .
+      cache_from:
+        - ghcr.io/sparkfabrik/gitlab-ci-client:latest
+    image: ghcr.io/sparkfabrik/gitlab-ci-client:latest
+    volumes:
+      - ./:/var/www/html
+    env_file:
+      - .env
