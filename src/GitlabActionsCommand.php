@@ -37,9 +37,9 @@ class GitlabActionsCommand extends Command {
 
     $method = $input->getArgument('action');
     $output->writeln("Given method: $method", OutputInterface::VERBOSITY_VERBOSE);
-    $raw_arguments = $input->hasArgument('arguments') ? $input->getArgument('arguments') : "[]";
+    $raw_arguments = $input->getArgument('arguments');
     $output->writeln("Given arguments: $raw_arguments", OutputInterface::VERBOSITY_VERBOSE);
-    $arguments = json_decode($raw_arguments, TRUE);
+    $arguments = !is_null($raw_arguments) ? json_decode($raw_arguments, TRUE) : [];
 
     [$gitlab_resource_method, $action] = explode('.', $method);
 
