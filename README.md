@@ -79,7 +79,7 @@ example-gitlab-ci-job:
         -e GITLAB_PRIVATE_TOKEN \
         -e CI_SERVER_URL \
         sparkfabrik/gitlab-ci-client \
-        mergeRequests.create '[$CI_PROJECT_ID,"autobranch/$CI_PIPELINE_ID","develop","AUTO: New merge request from pipeline $CI_PIPELINE_ID"]'
+        mergeRequests.create "[$CI_PROJECT_ID,\"autobranch/$CI_PIPELINE_ID\",\"develop\",\"AUTO: New merge request from pipeline $CI_PIPELINE_ID\"]"
 ```
 The above example will create a new merge request on the current project from branch "autobranch/$CI_PIPELINE_ID"
 (which is supposed to be created by this job before this execution) to branch "develop" and will title it "AUTO: New merge request from pipeline $CI_PIPELINE_ID".
@@ -93,9 +93,12 @@ example-gitlab-ci-job:
       docker run \
         -e GITLAB_PRIVATE_TOKEN \
         -e CI_SERVER_URL \
-        sparkfabrik/gitlab-ci-client mergeRequests.all '[$CI_PROJECT_ID,{"state":"opened","iids":[123,456]}]'
+        sparkfabrik/gitlab-ci-client mergeRequests.all '[null,{"state":"opened","iids":[123,456]}]'
 ```
 The above example will return only opened merge requests for the current project among a subset of given merge request ids (iids).
+
+
+Note that if you want to pass env variables you have to use double-quotes and, thus, you have to escape the double-quotes of the json string.
 
 
 Of course these are just simple examples. There are plenty of actions you can automate with this tool. The sky is the limit.
