@@ -36,7 +36,11 @@ class GitlabActionsCommand extends Command {
     $client->authenticate($private_token, Client::AUTH_HTTP_TOKEN);
 
     $method = $input->getArgument('action');
-    $arguments = json_decode($input->getArgument('arguments') ?? "[]", TRUE);
+    $output->writeln("Given method: $method", OutputInterface::VERBOSITY_VERBOSE);
+    $raw_arguments = $input->hasArgument('arguments') ? $input->getArgument('arguments') : "[]";
+    $output->writeln("Given arguments: $raw_arguments", OutputInterface::VERBOSITY_VERBOSE);
+    $arguments = json_decode($raw_arguments, TRUE);
+
     [$gitlab_resource_method, $action] = explode('.', $method);
 
     if (!method_exists($client, $gitlab_resource_method)) {

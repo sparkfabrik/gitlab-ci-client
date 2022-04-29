@@ -13,6 +13,8 @@ docker run \
 ```
 The above command will return all opened merge requests.
 
+You can also pass -v, -vv or -vvv to increase output verbosity.
+
 ### Command format
 
 ```bash
@@ -76,8 +78,8 @@ example-gitlab-ci-job:
       docker run \
         -e GITLAB_PRIVATE_TOKEN \
         -e CI_SERVER_URL \
-        sparkfabrik/gitlab-ci-client mergeRequests.create \
-        '[$CI_PROJECT_ID,"autobranch/$CI_PIPELINE_ID","develop","AUTO: New merge request from pipeline $CI_PIPELINE_ID"]'
+        sparkfabrik/gitlab-ci-client \
+        mergeRequests.create '[$CI_PROJECT_ID,"autobranch/$CI_PIPELINE_ID","develop","AUTO: New merge request from pipeline $CI_PIPELINE_ID"]'
 ```
 The above example will create a new merge request on the current project from branch "autobranch/$CI_PIPELINE_ID"
 (which is supposed to be created by this job before this execution) to branch "develop" and will title it "AUTO: New merge request from pipeline $CI_PIPELINE_ID".
