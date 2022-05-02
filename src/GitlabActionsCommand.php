@@ -14,6 +14,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GitlabActionsCommand extends Command {
 
   /**
+   * Gitlab client.
+   *
+   * @var \Gitlab\Client
+   */
+  private Client $client;
+
+  public function __construct(Client $client) {
+    parent::__construct();
+    $this->client = $client;
+  }
+
+  /**
    * {@inheritdoc}
    */
   protected function configure() {
@@ -31,9 +43,8 @@ class GitlabActionsCommand extends Command {
     $private_token = getenv('GITLAB_PRIVATE_TOKEN');
     $gitlab_url = getenv('CI_SERVER_URL');
 
-    $client = new Client();
-    $client->setUrl($gitlab_url);
-    $client->authenticate($private_token, Client::AUTH_HTTP_TOKEN);
+    $this->client->setUrl($gitlab_url);
+    $this->client->authenticate($private_token, Client::AUTH_HTTP_TOKEN);
 
     $method = $input->getArgument('action');
     $output->writeln("Given method: $method", OutputInterface::VERBOSITY_VERBOSE);
@@ -43,12 +54,12 @@ class GitlabActionsCommand extends Command {
 
     [$gitlab_resource_method, $action] = explode('.', $method);
 
-    if (!method_exists($client, $gitlab_resource_method)) {
+    if (!method_exists($this->client, $gitlab_resource_method)) {
       $output->writeln("<error> $gitlab_resource_method  is not a valid method</error>");
       return 1;
     }
 
-    $resource = $client->$gitlab_resource_method();
+    $resource = $this->client->$gitlab_resource_method();
 
     if (!method_exists($resource, $action)) {
       $output->writeln("<error> $action is not a valid method on \"$gitlab_resource_method\" resource </error>");
