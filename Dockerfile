@@ -1,4 +1,4 @@
-FROM ghcr.io/sparkfabrik/docker-php-base-image:8.0.8-fpm-alpine3.13
+FROM ghcr.io/sparkfabrik/docker-php-base-image:8.0.8-fpm-alpine3.13-rootless
 
 USER root
 
@@ -18,4 +18,3 @@ WORKDIR /var/www/html
 
 USER 1001
 ENTRYPOINT ["./src/gitlab-actions"]
-#CMD ["/bin/sh", "-c"]

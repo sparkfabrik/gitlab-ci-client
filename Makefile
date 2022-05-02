@@ -3,7 +3,7 @@
 # make gitlab-ci-client
 #
 
-IMAGE_NAME ?= sparkfabrik/gitlab-ci-client
+IMAGE_NAME ?= ghcr.io/sparkfabrik/gitlab-ci-client
 IMAGE_TAG ?= latest
 
 gitlab-ci-client: build-docker-image
