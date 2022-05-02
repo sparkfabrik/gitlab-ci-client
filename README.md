@@ -73,12 +73,9 @@ Once done you can run as any other script in your gitlab-ci step.
 ```yaml
 example-gitlab-ci-job:
   stage: build
+  image: ghcr.io/sparkfabrik/gitlab-ci-client
   script:
     - |
-      docker run \
-        -e GITLAB_PRIVATE_TOKEN \
-        -e CI_SERVER_URL \
-        sparkfabrik/gitlab-ci-client \
         mergeRequests.create "[$CI_PROJECT_ID,\"autobranch/$CI_PIPELINE_ID\",\"develop\",\"AUTO: New merge request from pipeline $CI_PIPELINE_ID\"]"
 ```
 The above example will create a new merge request on the current project from branch "autobranch/$CI_PIPELINE_ID"
@@ -88,12 +85,10 @@ Another example for fetching all opened merge requests:
 ```yaml
 example-gitlab-ci-job:
   stage: build
+  image: ghcr.io/sparkfabrik/gitlab-ci-client
   script:
     - |
-      docker run \
-        -e GITLAB_PRIVATE_TOKEN \
-        -e CI_SERVER_URL \
-        sparkfabrik/gitlab-ci-client mergeRequests.all '[null,{"state":"opened","iids":[123,456]}]'
+    mergeRequests.all '[null,{"state":"opened","iids":[123,456]}]'
 ```
 The above example will return only opened merge requests for the current project among a subset of given merge request ids (iids).
 
