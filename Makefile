@@ -16,3 +16,9 @@ gitlab-ci-client: build-docker-image
 
 build-docker-image:
 	docker buildx build --load -t $(IMAGE_NAME):$(IMAGE_TAG) -f Dockerfile .
+
+cli: build-docker-image
+	docker-compose run --rm --entrypoint=/bin/ash gitlab-ci-client
+
+cli-root: build-docker-image
+	docker-compose run --rm -u root --entrypoint=/bin/ash gitlab-ci-client
