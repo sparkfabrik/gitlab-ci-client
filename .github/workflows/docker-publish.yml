@@ -15,17 +15,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Build images
-        run: |
-          docker buildx build --load . --tag $IMAGE_NAME:latest
-
+      - uses: php-actions/composer@v5
+      - name: PHPUnit tests
+        uses: php-actions/phpunit@v3
+        env:
+          GITLAB_PRIVATE_TOKEN: Dummy token
+          CI_SERVER_URL: https://gitlab.dummy-site.com
+        with:
+          bootstrap: vendor/autoload.php
+          configuration: phpunit.xml
+          php_extensions: mbstring
   deploy:
     needs: test
     runs-on: ubuntu-latest
