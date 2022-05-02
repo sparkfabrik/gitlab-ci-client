@@ -1,5 +1,7 @@
 # Gitlab CI client
 
+![build and test](https://github.com/sparkfabrik/gitlab-ci-client/actions/workflows/docker-publish.yml/badge.svg?branch=main)
+
 This is a Gitlab API wrapper that helps to automate common actions on CI jobs (eg: Open a merge request, Open or close an issue etc)
 
 ## Basic Usage
