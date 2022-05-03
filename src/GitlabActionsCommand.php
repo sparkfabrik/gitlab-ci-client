@@ -39,7 +39,9 @@ class GitlabActionsCommand extends Command {
    * {@inheritdoc}
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $this->validateEnvVariables($output);
+    if (!$this->validateEnvVariables($output)) {
+      return 1;
+    }
     $private_token = getenv('GITLAB_PRIVATE_TOKEN');
     $gitlab_url = getenv('CI_SERVER_URL');
 
@@ -55,18 +57,17 @@ class GitlabActionsCommand extends Command {
     [$gitlab_resource_method, $action] = explode('.', $method);
 
     if (!method_exists($this->client, $gitlab_resource_method)) {
-      $output->writeln("<error> $gitlab_resource_method  is not a valid method</error>");
+      $output->writeln("<error>$gitlab_resource_method is not a valid method</error>");
       return 1;
     }
 
     $resource = $this->client->$gitlab_resource_method();
 
     if (!method_exists($resource, $action)) {
-      $output->writeln("<error> $action is not a valid method on \"$gitlab_resource_method\" resource </error>");
+      $output->writeln("<error>$action is not a valid method on \"$gitlab_resource_method\" resource</error>");
       return 1;
     }
 
-    $output->writeln(json_encode($arguments));
     $response = $resource->$action(...$arguments);
     $output->writeln(json_encode($response, JSON_PRETTY_PRINT));
     return 0;
@@ -86,9 +87,10 @@ class GitlabActionsCommand extends Command {
     foreach ($required_variables as $variable) {
       if (!getenv($variable)) {
         $output->writeln("<error>\"$variable\" env variable is not set.</error>");
-        exit(1);
+        return false;
       }
     }
+    return true;
   }
 
 }
