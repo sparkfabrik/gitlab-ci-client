@@ -17,6 +17,19 @@ class GitlabActionsCommandTest extends TestCase {
   use ProphecyTrait;
 
   /**
+   * {@inheritdoc}
+   */
+  protected function setUp(): void {
+    parent::setUp();
+    foreach ([
+      'GITLAB_PRIVATE_TOKEN',
+      'CI_SERVER_URL',
+    ] as $var) {
+      putenv("$var=something");
+    }
+  }
+
+  /**
    * Test the constructor.
    */
   public function testItCanBeInstantiated() {
@@ -39,6 +52,40 @@ class GitlabActionsCommandTest extends TestCase {
       ->assertOutputContains('"id": 123')
       ->assertOutputContains('"iid": 2345')
       ->assertOutputContains('"project_id": 12345');
+  }
+
+  /**
+   * Test that some env var are required.
+   */
+  public function testMissingVars() {
+    $required_variables = [
+      'GITLAB_PRIVATE_TOKEN',
+      'CI_SERVER_URL',
+    ];
+    $client = $this->mockClient(FALSE);
+    foreach ($required_variables as $variable) {
+      putenv("$variable=");
+      TestCommand::for(new GitlabActionsCommand($client->reveal()))
+        ->execute('mergeRequests.all')
+        ->assertOutputContains("\"$variable\" env variable is not set.")
+        ->assertStatusCode(1);
+      putenv("$variable=something");
+    }
+  }
+
+  /**
+   * Test that invalid method or resource should make the command exit with code 1.
+   */
+  public function testInvalidMethodOrResource() {
+    $client = $this->mockClient();
+    TestCommand::for(new GitlabActionsCommand($client->reveal()))
+      ->execute('foo.bar')
+      ->assertOutputContains('foo is not a valid method')
+      ->assertStatusCode(1);
+    TestCommand::for(new GitlabActionsCommand($client->reveal()))
+      ->execute('MergeRequests.bar')
+      ->assertOutputContains('bar is not a valid method on "MergeRequests" resource')
+      ->assertStatusCode(1);
   }
 
   /**
